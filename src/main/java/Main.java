@@ -11,7 +11,7 @@ public class Main {
     private Logger logger = Logger.getLogger(Main.class);
 
     public static void main(String[] args) throws IOException {
-        BufferedImage interlacedImage = loadImage(Main.class.getClassLoader().getResource("example_full_frame.png"));
+        BufferedImage interlacedImage = loadImage(Main.class.getClassLoader().getResource("example_odd_field.png"));
         BufferedImage deinterlaceLineDuplication = deinterlaceLineDuplication(interlacedImage);
         writeImage(deinterlaceLineDuplication);
     }
@@ -26,7 +26,7 @@ public class Main {
             returnValueGraphics.drawImage(oddLine, 0, lineIndex, null);
             returnValueGraphics.drawImage(oddLine, 0, lineIndex + 1, null);
         }
-        
+
         returnValueGraphics.dispose();
 
         return returnValue;
