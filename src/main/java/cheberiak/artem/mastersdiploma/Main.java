@@ -1,3 +1,5 @@
+package cheberiak.artem.mastersdiploma;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.log4j.Logger;
 
@@ -9,15 +11,19 @@ import java.io.IOException;
 import java.net.URL;
 
 public class Main {
-    private Logger logger = Logger.getLogger(Main.class);
+    private static Logger logger = Logger.getLogger(Main.class);
 
     public static void main(String[] args) throws IOException {
-        CliHandler handler = new CliHandler(args);
-        handler.parse();
-        CommandLine commandLine = handler.getCmd();
-
-        transform(commandLine.getOptionValue(CliHandler.ODD_FIELD_PATH_OPTION_STRING),
-                  commandLine.getOptionValue(CliHandler.RESULT_OPTION_STRING));
+        try {
+            CliHandler handler = new CliHandler(args);
+            handler.parse();
+            CommandLine commandLine = handler.getCmd();
+            
+            transform(commandLine.getOptionValue(CliHandler.ODD_FIELD_PATH_OPTION_STRING),
+                      commandLine.getOptionValue(CliHandler.RESULT_OPTION_STRING));
+        } catch (Exception e) {
+            logger.error(e);
+        }
     }
 
     private static void transform(String oddFieldPath, String deinterlacedPath) throws IOException {

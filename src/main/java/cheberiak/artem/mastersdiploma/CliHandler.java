@@ -1,3 +1,5 @@
+package cheberiak.artem.mastersdiploma;
+
 import org.apache.commons.cli.*;
 import org.apache.log4j.Logger;
 
@@ -11,7 +13,7 @@ class CliHandler {
     static final String RESULT_OPTION_STRING = "r";
     private static final String HELP_OPTION_STRING = "h";
     private static final String VERSION_OPTION_STRING = "v";
-    private static final Logger log = Logger.getLogger(CliHandler.class.getName());
+    private static final Logger log = Logger.getLogger(CliHandler.class);
     private final Options infoOptions = new Options();
     private final Options generationOptions = new Options();
     private String[] args = null;
@@ -20,25 +22,22 @@ class CliHandler {
     public CliHandler(String[] appArgs) {
         args = appArgs;
 
-        OptionGroup inputGroup = new OptionGroup();
-        inputGroup.addOption(Option.builder(EVEN_FIELD_PATH_OPTION_STRING)
+        generationOptions.addOption(Option.builder(EVEN_FIELD_PATH_OPTION_STRING)
                                    .longOpt("even")
                                    .desc("path to even field picture")
                                    .hasArg()
                                    .build());
-        inputGroup.addOption(Option.builder(ODD_FIELD_PATH_OPTION_STRING)
+        generationOptions.addOption(Option.builder(ODD_FIELD_PATH_OPTION_STRING)
                                    .longOpt("odd")
                                    .desc("path to odd field picture")
                                    .hasArg()
                                    .build());
-        inputGroup.addOption(Option.builder(RESULT_OPTION_STRING)
+        generationOptions.addOption(Option.builder(RESULT_OPTION_STRING)
                                    .longOpt("result")
                                    .desc("path to write the result")
                                    .hasArg()
                                    .required()
                                    .build());
-        inputGroup.setRequired(true);
-        generationOptions.addOptionGroup(inputGroup);
 
         infoOptions.addOption(Option.builder(VERSION_OPTION_STRING).longOpt("version")
                                     .desc("show current tool version.").build());
@@ -77,9 +76,9 @@ class CliHandler {
     }
 
     private void help() {
-        System.out.println("Factory programming tool help:");
+        System.out.println("Deinterlacer tool tool help:");
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("generation", generationOptions);
+        formatter.printHelp("deinterlacing", generationOptions);
         formatter.printHelp("info", infoOptions);
     }
 
@@ -89,7 +88,7 @@ class CliHandler {
         properties.load(propertiesStream);
         propertiesStream.close();
 
-        System.out.println("Factory programming C++ tool.");
+        System.out.println("Deinterlacer tool.");
         System.out.println("Version: " + properties.getProperty("version"));
     }
 }
