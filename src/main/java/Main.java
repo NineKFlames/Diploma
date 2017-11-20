@@ -1,3 +1,4 @@
+import org.apache.commons.cli.CommandLine;
 import org.apache.log4j.Logger;
 
 import javax.imageio.ImageIO;
@@ -11,9 +12,18 @@ public class Main {
     private Logger logger = Logger.getLogger(Main.class);
 
     public static void main(String[] args) throws IOException {
-        BufferedImage interlacedImage = loadImage(Main.class.getClassLoader().getResource("example_odd_field.png"));
-        BufferedImage deinterlaceLineDuplication = deinterlaceLineDuplication(interlacedImage);
-        writeImage(deinterlaceLineDuplication);
+        CliHandler handler = new CliHandler(args);
+        handler.parse();
+        CommandLine commandLine = handler.getCmd();
+
+        transform(commandLine.getOptionValue(CliHandler.ODD_FIELD_PATH_OPTION_STRING),
+                  commandLine.getOptionValue(CliHandler.RESULT_OPTION_STRING));
+    }
+
+    private static void transform(String oddFieldPath, String deinterlacedPath) throws IOException {
+        BufferedImage oddField = loadImage(Main.class.getClassLoader().getResource(oddFieldPath));
+        BufferedImage deinterlaceLineDuplication = deinterlaceLineDuplication(oddField);
+        writeImage(deinterlaceLineDuplication, deinterlacedPath);
     }
 
     private static BufferedImage deinterlaceLineDuplication(BufferedImage interlacedImage) {
@@ -32,8 +42,9 @@ public class Main {
         return returnValue;
     }
 
-    private static void writeImage(BufferedImage img) throws IOException {
-        ImageIO.write(img, "png", new File("test.png"));
+    private static void writeImage(BufferedImage img, String pathname) throws IOException {
+        String[] split = pathname.split("\\.");
+        ImageIO.write(img, split[split.length - 1], new File(pathname));
     }
 
     private static BufferedImage loadImage(URL resource) throws IOException {
