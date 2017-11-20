@@ -18,29 +18,43 @@ public class Main {
             CliHandler handler = new CliHandler(args);
             handler.parse();
             CommandLine commandLine = handler.getCmd();
+            BufferedImage result = null;
+
+            if (commandLine.hasOption(CliHandler.ODD_FIELD_PATH_OPTION_STRING)) {
+                URL oddFieldURL = Main.class.getClassLoader()
+                                            .getResource(commandLine.getOptionValue(
+                                                    CliHandler.ODD_FIELD_PATH_OPTION_STRING));
+                result = deinterlaceLineDuplication(loadImage(oddFieldURL), false);
+            } else if (commandLine.hasOption(CliHandler.EVEN_FIELD_PATH_OPTION_STRING)) {
+                URL oddFieldURL = Main.class.getClassLoader()
+                                            .getResource(commandLine.getOptionValue(
+                                                    CliHandler.EVEN_FIELD_PATH_OPTION_STRING));
+                result = deinterlaceLineDuplication(loadImage(oddFieldURL), true);
+            }
             
-            transform(commandLine.getOptionValue(CliHandler.ODD_FIELD_PATH_OPTION_STRING),
-                      commandLine.getOptionValue(CliHandler.RESULT_OPTION_STRING));
+            writeImage(result, commandLine.getOptionValue(CliHandler.RESULT_OPTION_STRING));
         } catch (Exception e) {
             logger.error(e);
         }
     }
 
-    private static void transform(String oddFieldPath, String deinterlacedPath) throws IOException {
-        BufferedImage oddField = loadImage(Main.class.getClassLoader().getResource(oddFieldPath));
-        BufferedImage deinterlaceLineDuplication = deinterlaceLineDuplication(oddField);
-        writeImage(deinterlaceLineDuplication, deinterlacedPath);
-    }
-
-    private static BufferedImage deinterlaceLineDuplication(BufferedImage interlacedImage) {
+    private static BufferedImage deinterlaceLineDuplication(BufferedImage field, boolean isFieldEven) {
         BufferedImage returnValue =
-                new BufferedImage(interlacedImage.getWidth(), interlacedImage.getHeight(), interlacedImage.getType());
+                new BufferedImage(field.getWidth(), field.getHeight(), field.getType());
         Graphics returnValueGraphics = returnValue.getGraphics();
 
-        for (int lineIndex = 0; lineIndex < interlacedImage.getHeight(); lineIndex += 2) {
-            BufferedImage oddLine = interlacedImage.getSubimage(0, lineIndex, interlacedImage.getWidth(), 1);
-            returnValueGraphics.drawImage(oddLine, 0, lineIndex, null);
-            returnValueGraphics.drawImage(oddLine, 0, lineIndex + 1, null);
+        if (isFieldEven) {
+            for (int lineIndex = 1; lineIndex < field.getHeight(); lineIndex += 2) {
+                BufferedImage oddLine = field.getSubimage(0, lineIndex, field.getWidth(), 1);
+                returnValueGraphics.drawImage(oddLine, 0, lineIndex - 1, null);
+                returnValueGraphics.drawImage(oddLine, 0, lineIndex, null);
+            }
+        } else {
+            for (int lineIndex = 0; lineIndex < field.getHeight(); lineIndex += 2) {
+                BufferedImage oddLine = field.getSubimage(0, lineIndex, field.getWidth(), 1);
+                returnValueGraphics.drawImage(oddLine, 0, lineIndex, null);
+                returnValueGraphics.drawImage(oddLine, 0, lineIndex + 1, null);
+            }
         }
 
         returnValueGraphics.dispose();
