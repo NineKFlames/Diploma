@@ -134,7 +134,7 @@ public class Main {
     private static BufferedImage getInterpolatedLine(BufferedImage line) {
         BufferedImage returnValue = new BufferedImage(line.getWidth(), 1, line.getType());
 
-        for (int pixelIndex = 1; pixelIndex < returnValue.getWidth() - 2; pixelIndex++) {
+        for (int pixelIndex = 1; pixelIndex < returnValue.getWidth() - 1; pixelIndex++) {
             returnValue.setRGB(pixelIndex,
                                0,
                                getInterpolatedPixel(line, pixelIndex));
@@ -160,7 +160,8 @@ public class Main {
     private static BufferedImage getInterpolatedLine(BufferedImage oddLineHigher,
                                                      BufferedImage oddLineLower) {
         BufferedImage returnValue = new BufferedImage(oddLineHigher.getWidth(), 1, oddLineHigher.getType());
-        for (int pixelIndex = 1; pixelIndex < returnValue.getWidth() - 2; pixelIndex++) {
+        
+        for (int pixelIndex = 1; pixelIndex < returnValue.getWidth() - 1; pixelIndex++) {
             returnValue.setRGB(pixelIndex,
                                0,
                                getInterpolatedPixel(oddLineHigher, oddLineLower, pixelIndex));
