@@ -80,55 +80,63 @@ public class Main {
         Graphics returnValueGraphics = returnValue.getGraphics();
 
         if (isFieldEven) {
-            BufferedImage firstEvenLine = field.getSubimage(0, 1, field.getWidth(), 1);
-            returnValueGraphics.drawImage(getInterpolatedLine(firstEvenLine),
-                                          0,
-                                          0,
-                                          null);
-            returnValueGraphics.drawImage(firstEvenLine,
-                                          0,
-                                          1,
-                                          null);
-
-            for (int lineIndex = 2; lineIndex < field.getHeight(); lineIndex += 2) {
-                BufferedImage evenLineHigher = field.getSubimage(0, lineIndex - 1, field.getWidth(), 1);
-                BufferedImage evenLineLower = field.getSubimage(0, lineIndex + 1, field.getWidth(), 1);
-                returnValueGraphics.drawImage(getInterpolatedLine(evenLineHigher, evenLineLower),
-                                              0,
-                                              lineIndex,
-                                              null);
-                returnValueGraphics.drawImage(field.getSubimage(0, lineIndex + 1, field.getWidth(), 1),
-                                              0,
-                                              lineIndex + 1,
-                                              null);
-            }
+            interpolateFromEvenField(field, returnValueGraphics);
         } else {
-            returnValueGraphics.drawImage(field.getSubimage(0, 0, field.getWidth(), 1),
-                                          0,
-                                          0,
-                                          null);
-            returnValueGraphics.drawImage(getInterpolatedLine(field.getSubimage(0, field.getHeight() - 2, field.getWidth(), 1)),
-                                          0,
-                                          field.getHeight() - 1,
-                                          null);
-
-            for (int lineIndex = 1; lineIndex < field.getHeight() - 1; lineIndex += 2) {
-                BufferedImage evenLineHigher = field.getSubimage(0, lineIndex - 1, field.getWidth(), 1);
-                BufferedImage evenLineLower = field.getSubimage(0, lineIndex + 1, field.getWidth(), 1);
-                returnValueGraphics.drawImage(getInterpolatedLine(evenLineHigher, evenLineLower),
-                                              0,
-                                              lineIndex,
-                                              null);
-                returnValueGraphics.drawImage(field.getSubimage(0, lineIndex + 1, field.getWidth(), 1),
-                                              0,
-                                              lineIndex + 1,
-                                              null);
-            }
+            interpolateFromOddField(field, returnValueGraphics);
         }
 
         returnValueGraphics.dispose();
 
         return returnValue;
+    }
+
+    private static void interpolateFromOddField(BufferedImage field, Graphics returnValueGraphics) {
+        returnValueGraphics.drawImage(field.getSubimage(0, 0, field.getWidth(), 1),
+                                      0,
+                                      0,
+                                      null);
+        returnValueGraphics.drawImage(getInterpolatedLine(field.getSubimage(0, field.getHeight() - 2, field.getWidth(), 1)),
+                                      0,
+                                      field.getHeight() - 1,
+                                      null);
+
+        for (int lineIndex = 1; lineIndex < field.getHeight() - 1; lineIndex += 2) {
+            BufferedImage evenLineHigher = field.getSubimage(0, lineIndex - 1, field.getWidth(), 1);
+            BufferedImage evenLineLower = field.getSubimage(0, lineIndex + 1, field.getWidth(), 1);
+            returnValueGraphics.drawImage(getInterpolatedLine(evenLineHigher, evenLineLower),
+                                          0,
+                                          lineIndex,
+                                          null);
+            returnValueGraphics.drawImage(field.getSubimage(0, lineIndex + 1, field.getWidth(), 1),
+                                          0,
+                                          lineIndex + 1,
+                                          null);
+        }
+    }
+
+    private static void interpolateFromEvenField(BufferedImage field, Graphics returnValueGraphics) {
+        BufferedImage firstEvenLine = field.getSubimage(0, 1, field.getWidth(), 1);
+        returnValueGraphics.drawImage(getInterpolatedLine(firstEvenLine),
+                                      0,
+                                      0,
+                                      null);
+        returnValueGraphics.drawImage(firstEvenLine,
+                                      0,
+                                      1,
+                                      null);
+
+        for (int lineIndex = 2; lineIndex < field.getHeight(); lineIndex += 2) {
+            BufferedImage evenLineHigher = field.getSubimage(0, lineIndex - 1, field.getWidth(), 1);
+            BufferedImage evenLineLower = field.getSubimage(0, lineIndex + 1, field.getWidth(), 1);
+            returnValueGraphics.drawImage(getInterpolatedLine(evenLineHigher, evenLineLower),
+                                          0,
+                                          lineIndex,
+                                          null);
+            returnValueGraphics.drawImage(field.getSubimage(0, lineIndex + 1, field.getWidth(), 1),
+                                          0,
+                                          lineIndex + 1,
+                                          null);
+        }
     }
 
     private static BufferedImage getInterpolatedLine(BufferedImage line) {
