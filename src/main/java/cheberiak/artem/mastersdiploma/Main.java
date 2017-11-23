@@ -37,6 +37,7 @@ public class Main {
             writeImage(result, commandLine.getOptionValue(CliHandler.RESULT_OPTION_STRING));
         } catch (Exception e) {
             logger.error(e);
+            System.exit(1);
         }
     }
 
@@ -79,11 +80,12 @@ public class Main {
         Graphics returnValueGraphics = returnValue.getGraphics();
 
         if (isFieldEven) {
-            returnValueGraphics.drawImage(field.getSubimage(0, 0, field.getWidth(), 1),
+            BufferedImage firstEvenLine = field.getSubimage(0, 1, field.getWidth(), 1);
+            returnValueGraphics.drawImage(getInterpolatedLine(firstEvenLine),
                                           0,
                                           0,
                                           null);
-            returnValueGraphics.drawImage(field.getSubimage(0, 1, field.getWidth(), 1),
+            returnValueGraphics.drawImage(firstEvenLine,
                                           0,
                                           1,
                                           null);
@@ -105,7 +107,7 @@ public class Main {
                                           0,
                                           0,
                                           null);
-            returnValueGraphics.drawImage(field.getSubimage(0, field.getHeight() - 1, field.getWidth(), 1),
+            returnValueGraphics.drawImage(getInterpolatedLine(field.getSubimage(0, field.getHeight() - 2, field.getWidth(), 1)),
                                           0,
                                           field.getHeight() - 1,
                                           null);
@@ -127,6 +129,32 @@ public class Main {
         returnValueGraphics.dispose();
 
         return returnValue;
+    }
+
+    private static BufferedImage getInterpolatedLine(BufferedImage line) {
+        BufferedImage returnValue = new BufferedImage(line.getWidth(), 1, line.getType());
+
+        for (int pixelIndex = 1; pixelIndex < returnValue.getWidth() - 2; pixelIndex++) {
+            returnValue.setRGB(pixelIndex,
+                               0,
+                               getInterpolatedPixel(line, pixelIndex));
+        }
+
+        returnValue.setRGB(0, 0, getIterpolatedPixelFromPixelList(
+                Arrays.asList(new Color(line.getRGB(0, 0), true),
+                              new Color(line.getRGB(1, 0), true))));
+        returnValue.setRGB(returnValue.getWidth() - 1, 0, getIterpolatedPixelFromPixelList(
+                Arrays.asList(new Color(line.getRGB(returnValue.getWidth() - 1, 0), true),
+                              new Color(line.getRGB(returnValue.getWidth() - 2, 0), true))));
+        return returnValue;
+    }
+
+    private static int getInterpolatedPixel(BufferedImage line, int pixelIndex) {
+        List<Color> neighborPixels = Arrays.asList(
+                new Color(line.getRGB(pixelIndex - 1, 0), true),
+                new Color(line.getRGB(pixelIndex, 0), true),
+                new Color(line.getRGB(pixelIndex + 1, 0), true));
+        return getIterpolatedPixelFromPixelList(neighborPixels);
     }
 
     private static BufferedImage getInterpolatedLine(BufferedImage oddLineHigher,
