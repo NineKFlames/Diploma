@@ -95,7 +95,10 @@ public class Main {
                                       0,
                                       0,
                                       null);
-        returnValueGraphics.drawImage(getInterpolatedLine(field.getSubimage(0, field.getHeight() - 2, field.getWidth(), 1)),
+        returnValueGraphics.drawImage(getInterpolatedLine(field.getSubimage(0,
+                                                                            field.getHeight() - 2,
+                                                                            field.getWidth(),
+                                                                            1)),
                                       0,
                                       field.getHeight() - 1,
                                       null);
@@ -148,10 +151,10 @@ public class Main {
                                getInterpolatedPixel(line, pixelIndex));
         }
 
-        returnValue.setRGB(0, 0, getIterpolatedPixelFromPixelList(
+        returnValue.setRGB(0, 0, getInterpolatedPixelFromPixelList(
                 Arrays.asList(new Color(line.getRGB(0, 0), true),
                               new Color(line.getRGB(1, 0), true))));
-        returnValue.setRGB(returnValue.getWidth() - 1, 0, getIterpolatedPixelFromPixelList(
+        returnValue.setRGB(returnValue.getWidth() - 1, 0, getInterpolatedPixelFromPixelList(
                 Arrays.asList(new Color(line.getRGB(returnValue.getWidth() - 1, 0), true),
                               new Color(line.getRGB(returnValue.getWidth() - 2, 0), true))));
         return returnValue;
@@ -162,25 +165,25 @@ public class Main {
                 new Color(line.getRGB(pixelIndex - 1, 0), true),
                 new Color(line.getRGB(pixelIndex, 0), true),
                 new Color(line.getRGB(pixelIndex + 1, 0), true));
-        return getIterpolatedPixelFromPixelList(neighborPixels);
+        return getInterpolatedPixelFromPixelList(neighborPixels);
     }
 
     private static BufferedImage getInterpolatedLine(BufferedImage oddLineHigher,
                                                      BufferedImage oddLineLower) {
         BufferedImage returnValue = new BufferedImage(oddLineHigher.getWidth(), 1, oddLineHigher.getType());
-        
+
         for (int pixelIndex = 1; pixelIndex < returnValue.getWidth() - 1; pixelIndex++) {
             returnValue.setRGB(pixelIndex,
                                0,
                                getInterpolatedPixel(oddLineHigher, oddLineLower, pixelIndex));
         }
 
-        returnValue.setRGB(0, 0, getIterpolatedPixelFromPixelList(
+        returnValue.setRGB(0, 0, getInterpolatedPixelFromPixelList(
                 Arrays.asList(new Color(oddLineHigher.getRGB(0, 0), true),
                               new Color(oddLineHigher.getRGB(1, 0), true),
                               new Color(oddLineLower.getRGB(0, 0), true),
                               new Color(oddLineLower.getRGB(1, 0), true))));
-        returnValue.setRGB(returnValue.getWidth() - 1, 0, getIterpolatedPixelFromPixelList(
+        returnValue.setRGB(returnValue.getWidth() - 1, 0, getInterpolatedPixelFromPixelList(
                 Arrays.asList(new Color(oddLineHigher.getRGB(returnValue.getWidth() - 1, 0), true),
                               new Color(oddLineHigher.getRGB(returnValue.getWidth() - 2, 0), true),
                               new Color(oddLineLower.getRGB(returnValue.getWidth() - 1, 0), true),
@@ -196,10 +199,10 @@ public class Main {
                 new Color(oddLineLower.getRGB(pixelIndex - 1, 0), true),
                 new Color(oddLineLower.getRGB(pixelIndex, 0), true),
                 new Color(oddLineLower.getRGB(pixelIndex + 1, 0), true));
-        return getIterpolatedPixelFromPixelList(neighborPixels);
+        return getInterpolatedPixelFromPixelList(neighborPixels);
     }
 
-    private static int getIterpolatedPixelFromPixelList(List<Color> neighborPixels) {
+    private static int getInterpolatedPixelFromPixelList(List<Color> neighborPixels) {
         int r = 0;
         int g = 0;
         int b = 0;
