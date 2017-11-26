@@ -11,7 +11,7 @@ class CliHandler {
     static final String EVEN_FIELD_PATH_OPTION_STRING = "e";
     static final String ODD_FIELD_PATH_OPTION_STRING = "o";
     static final String RESULT_OPTION_STRING = "r";
-    static final String INTERPOLATOIN_ALGORITHM_OPTION_STRING = "i";
+    static final String INTERPOLATION_ALGORITHM_OPTION_STRING = "i";
     private static final String HELP_OPTION_STRING = "h";
     private static final String VERSION_OPTION_STRING = "v";
     private static final Logger log = Logger.getLogger(CliHandler.class);
@@ -39,7 +39,7 @@ class CliHandler {
                                           .hasArg()
                                           .required()
                                           .build());
-        generationOptions.addOption(Option.builder(INTERPOLATOIN_ALGORITHM_OPTION_STRING)
+        generationOptions.addOption(Option.builder(INTERPOLATION_ALGORITHM_OPTION_STRING)
                                           .longOpt("interpolate")
                                           .desc("use line interpolation deinterlacing algorithm " +
                                                 "instead of default line duplication")
