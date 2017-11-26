@@ -14,10 +14,13 @@ import java.util.function.BiFunction;
 import static cheberiak.artem.mastersdiploma.CliHandler.*;
 
 public class Main {
+    private static final Analyzer analyzer = new Analyzer();
     private static final BiFunction<BufferedImage, Boolean, BufferedImage>
             DEINTERLACE_LINE_INTERPOLATION = LineInterpolation::deinterlaceLineInterpolation;
     private static final BiFunction<BufferedImage, Boolean, BufferedImage>
             DEINTERLACE_LINE_DUPLICATION = LineDuplication::deinterlaceLineDuplication;
+    protected static final String MAP_PNG_PATH = "map.png";
+    protected static final String EXAMPLE_FULL_FRAME_PNG_PATH = "example_full_frame.png";
     private static Logger logger = Logger.getLogger(Main.class);
 
     public static void main(String[] args) throws IOException {
@@ -39,14 +42,10 @@ public class Main {
             }
 
             if (commandLine.hasOption(ODD_FIELD_PATH_OPTION_STRING)) {
-                source = loadImage(Main.class.getClassLoader()
-                                             .getResource(commandLine.getOptionValue(
-                                                     ODD_FIELD_PATH_OPTION_STRING)));
+                source = loadImage(getResource(commandLine.getOptionValue(ODD_FIELD_PATH_OPTION_STRING)));
                 logger.info("Interpolating odd field...");
             } else if (commandLine.hasOption(EVEN_FIELD_PATH_OPTION_STRING)) {
-                source = loadImage(Main.class.getClassLoader()
-                                             .getResource(commandLine.getOptionValue(
-                                                     EVEN_FIELD_PATH_OPTION_STRING)));
+                source = loadImage(getResource(commandLine.getOptionValue(EVEN_FIELD_PATH_OPTION_STRING)));
                 isFieldEven = true;
                 logger.info("Interpolating even field...");
             } else {
@@ -55,12 +54,27 @@ public class Main {
             }
 
             Path resultPath = Paths.get(commandLine.getOptionValue(RESULT_OPTION_STRING));
-            writeImage(algorithm.apply(source, isFieldEven), resultPath);
-            logger.info("Image deinterlaced. Path: " + resultPath);
+            BufferedImage deinterlacedImage = algorithm.apply(source, isFieldEven);
+            writeImage(deinterlacedImage, resultPath);
+            logger.info("Image deinterlaced. Path: " + resultPath.toAbsolutePath());
+
+            analyzeDeinterlacedImage(deinterlacedImage);
         } catch (Exception e) {
             logger.error(e);
             System.exit(1);
         }
+    }
+
+    private static void analyzeDeinterlacedImage(BufferedImage deinterlacedImage) throws IOException {
+        analyzer.analyze(loadImage(getResource(EXAMPLE_FULL_FRAME_PNG_PATH)), deinterlacedImage);
+        logger.info("Image analyzed. Amount of pixels changed: " + analyzer.getChangedPixelsAmount());
+        Path changesMapPath = Paths.get(MAP_PNG_PATH);
+        writeImage(analyzer.getChangeMap(), changesMapPath);
+        logger.info("Map with changes can be found at path " + changesMapPath.toAbsolutePath());
+    }
+
+    private static URL getResource(String path) {
+        return Main.class.getClassLoader().getResource(path);
     }
 
     private static void writeImage(BufferedImage img, Path path) throws IOException {
