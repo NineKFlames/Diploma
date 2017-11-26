@@ -11,6 +11,7 @@ class CliHandler {
     static final String EVEN_FIELD_PATH_OPTION_STRING = "e";
     static final String ODD_FIELD_PATH_OPTION_STRING = "o";
     static final String RESULT_OPTION_STRING = "r";
+    static final String INTERPOLATOIN_ALGORITHM_OPTION_STRING = "i";
     private static final String HELP_OPTION_STRING = "h";
     private static final String VERSION_OPTION_STRING = "v";
     private static final Logger log = Logger.getLogger(CliHandler.class);
@@ -23,21 +24,26 @@ class CliHandler {
         args = appArgs;
 
         generationOptions.addOption(Option.builder(EVEN_FIELD_PATH_OPTION_STRING)
-                                   .longOpt("even")
-                                   .desc("path to even field picture")
-                                   .hasArg()
-                                   .build());
+                                          .longOpt("even")
+                                          .desc("path to even field picture")
+                                          .hasArg()
+                                          .build());
         generationOptions.addOption(Option.builder(ODD_FIELD_PATH_OPTION_STRING)
-                                   .longOpt("odd")
-                                   .desc("path to odd field picture")
-                                   .hasArg()
-                                   .build());
+                                          .longOpt("odd")
+                                          .desc("path to odd field picture")
+                                          .hasArg()
+                                          .build());
         generationOptions.addOption(Option.builder(RESULT_OPTION_STRING)
-                                   .longOpt("result")
-                                   .desc("path to write the result")
-                                   .hasArg()
-                                   .required()
-                                   .build());
+                                          .longOpt("result")
+                                          .desc("path to write the result")
+                                          .hasArg()
+                                          .required()
+                                          .build());
+        generationOptions.addOption(Option.builder(INTERPOLATOIN_ALGORITHM_OPTION_STRING)
+                                          .longOpt("interpolate")
+                                          .desc("use line interpolation deinterlacing algorithm " +
+                                                "instead of default line duplication")
+                                          .build());
 
         infoOptions.addOption(Option.builder(VERSION_OPTION_STRING).longOpt("version")
                                     .desc("show current tool version.").build());
