@@ -4,17 +4,19 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.log4j.Logger;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
+import java.util.function.BiFunction;
 
-import static cheberiak.artem.mastersdiploma.LineInterpolation.deinterlaceLineInterpolation;
+import static cheberiak.artem.mastersdiploma.CliHandler.*;
 
 public class Main {
+    private static final BiFunction<BufferedImage, Boolean, BufferedImage>
+            DEINTERLACE_LINE_INTERPOLATION = LineInterpolation::deinterlaceLineInterpolation;
+    private static final BiFunction<BufferedImage, Boolean, BufferedImage>
+            DEINTERLACE_LINE_DUPLICATION = LineDuplication::deinterlaceLineDuplication;
     private static Logger logger = Logger.getLogger(Main.class);
 
     public static void main(String[] args) throws IOException {
@@ -22,21 +24,31 @@ public class Main {
             CliHandler handler = new CliHandler(args);
             handler.parse();
             CommandLine commandLine = handler.getCmd();
-            BufferedImage result = null;
+            boolean isFieldEven = false;
+            BufferedImage source = null;
+            BiFunction<BufferedImage, Boolean, BufferedImage> algorithm;
 
-            if (commandLine.hasOption(CliHandler.ODD_FIELD_PATH_OPTION_STRING)) {
-                URL oddFieldURL = Main.class.getClassLoader()
-                                            .getResource(commandLine.getOptionValue(
-                                                    CliHandler.ODD_FIELD_PATH_OPTION_STRING));
-                result = deinterlaceLineInterpolation(loadImage(oddFieldURL), false);
-            } else if (commandLine.hasOption(CliHandler.EVEN_FIELD_PATH_OPTION_STRING)) {
-                URL oddFieldURL = Main.class.getClassLoader()
-                                            .getResource(commandLine.getOptionValue(
-                                                    CliHandler.EVEN_FIELD_PATH_OPTION_STRING));
-                result = deinterlaceLineInterpolation(loadImage(oddFieldURL), true);
+            if (commandLine.hasOption(INTERPOLATOIN_ALGORITHM_OPTION_STRING)) {
+                algorithm = DEINTERLACE_LINE_INTERPOLATION;
+            } else {
+                algorithm = DEINTERLACE_LINE_DUPLICATION;
             }
 
-            writeImage(result, commandLine.getOptionValue(CliHandler.RESULT_OPTION_STRING));
+            if (commandLine.hasOption(ODD_FIELD_PATH_OPTION_STRING)) {
+                source = loadImage(Main.class.getClassLoader()
+                                             .getResource(commandLine.getOptionValue(
+                                                     ODD_FIELD_PATH_OPTION_STRING)));
+            } else if (commandLine.hasOption(EVEN_FIELD_PATH_OPTION_STRING)) {
+                source = loadImage(Main.class.getClassLoader()
+                                             .getResource(commandLine.getOptionValue(
+                                                     EVEN_FIELD_PATH_OPTION_STRING)));
+                isFieldEven = true;
+            } else {
+                logger.error("No field received! Nothing to convert");
+                System.exit(1);
+            }
+            
+            writeImage(algorithm.apply(source, isFieldEven), commandLine.getOptionValue(RESULT_OPTION_STRING));
         } catch (Exception e) {
             logger.error(e);
             System.exit(1);
