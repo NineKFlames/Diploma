@@ -11,10 +11,10 @@ class CliHandler {
     static final String EVEN_FIELD_PATH_OPTION_STRING = "e";
     static final String ODD_FIELD_PATH_OPTION_STRING = "o";
     static final String RESULT_OPTION_STRING = "r";
-    static final String INTERPOLATION_ALGORITHM_OPTION_STRING = "i";
+    static final String AVERAGE_ALGORITHM_OPTION_STRING = "a";
     private static final String HELP_OPTION_STRING = "h";
     private static final String VERSION_OPTION_STRING = "v";
-    private static final Logger log = Logger.getLogger(CliHandler.class);
+    private static final Logger LOG = Logger.getLogger(CliHandler.class);
     private final Options infoOptions = new Options();
     private final Options generationOptions = new Options();
     private String[] args = null;
@@ -39,8 +39,8 @@ class CliHandler {
                                           .hasArg()
                                           .required()
                                           .build());
-        generationOptions.addOption(Option.builder(INTERPOLATION_ALGORITHM_OPTION_STRING)
-                                          .longOpt("interpolate")
+        generationOptions.addOption(Option.builder(AVERAGE_ALGORITHM_OPTION_STRING)
+                                          .longOpt("useAverage")
                                           .desc("use line interpolation deinterlacing algorithm " +
                                                 "instead of default line duplication")
                                           .build());
@@ -75,8 +75,7 @@ class CliHandler {
             }
 
         } catch (Exception e) {
-            log.error("Exception during parsing command line properties. If you are lost in options, try -h",
-                      e);
+            LOG.error("Exception during parsing command line properties. If you are lost in options, try -h");
             System.exit(1);
         }
     }

@@ -3,8 +3,8 @@ package cheberiak.artem.mastersdiploma;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class LineDuplication {
-    public static BufferedImage deinterlaceLineDuplication(BufferedImage field, boolean isFieldEven) {
+public class LineDuplication implements Deinterlacer {
+    public static BufferedImage deinterlace(BufferedImage field, boolean isFieldEven) {
         BufferedImage returnValue =
                 new BufferedImage(field.getWidth(), field.getHeight(), field.getType());
         Graphics returnValueGraphics = returnValue.getGraphics();
