@@ -16,9 +16,9 @@ import static cheberiak.artem.mastersdiploma.CliHandler.*;
 public class Main {
     private static final Analyzer analyzer = new Analyzer();
     private static final BiFunction<BufferedImage, Boolean, BufferedImage>
-            DEINTERLACE_LINE_INTERPOLATION = LineInterpolation::deinterlaceLineInterpolation;
+            DEINTERLACE_LINE_AVERAGE = LineAverage::deinterlace;
     private static final BiFunction<BufferedImage, Boolean, BufferedImage>
-            DEINTERLACE_LINE_DUPLICATION = LineDuplication::deinterlaceLineDuplication;
+            DEINTERLACE_LINE_DUPLICATION = LineDuplication::deinterlace;
     private static final String MAP_PNG_PATH = "map.png";
     private static final String EXAMPLE_FULL_FRAME_PNG_PATH = "example_full_frame.png";
     private static Logger logger = Logger.getLogger(Main.class);
@@ -33,8 +33,8 @@ public class Main {
             BiFunction<BufferedImage, Boolean, BufferedImage> algorithm;
             logger.info("Starting deintrelacing...");
 
-            if (commandLine.hasOption(INTERPOLATION_ALGORITHM_OPTION_STRING)) {
-                algorithm = DEINTERLACE_LINE_INTERPOLATION;
+            if (commandLine.hasOption(AVERAGE_ALGORITHM_OPTION_STRING)) {
+                algorithm = DEINTERLACE_LINE_AVERAGE;
                 logger.info("Line interpolation algorithm is chosen.");
             } else {
                 algorithm = DEINTERLACE_LINE_DUPLICATION;
