@@ -72,22 +72,22 @@ public class LineAverage implements Deinterlacer {
         }
     }
 
-    private static BufferedImage getAverageLine(BufferedImage oddLineHigher,
-                                                BufferedImage oddLineLower) {
-        BufferedImage returnValue = new BufferedImage(oddLineHigher.getWidth(), 1, oddLineHigher.getType());
+    private static BufferedImage getAverageLine(BufferedImage lineHigher,
+                                                BufferedImage lineLower) {
+        BufferedImage returnValue = new BufferedImage(lineHigher.getWidth(), 1, lineHigher.getType());
 
         for (int pixelIndex = 0; pixelIndex < returnValue.getWidth(); pixelIndex++) {
             returnValue.setRGB(pixelIndex,
                                0,
-                               getAveragePixel(oddLineHigher, oddLineLower, pixelIndex));
+                               getAveragePixel(lineHigher, lineLower, pixelIndex));
         }
 
         return returnValue;
     }
 
-    private static int getAveragePixel(BufferedImage oddLineHigher, BufferedImage oddLineLower, int pixelIndex) {
-        Color pixelHigher = new Color(oddLineHigher.getRGB(pixelIndex, 0), true);
-        Color pixelLower = new Color(oddLineLower.getRGB(pixelIndex, 0), true);
+    private static int getAveragePixel(BufferedImage lineHigher, BufferedImage lineLower, int pixelIndex) {
+        Color pixelHigher = new Color(lineHigher.getRGB(pixelIndex, 0), true);
+        Color pixelLower = new Color(lineLower.getRGB(pixelIndex, 0), true);
 
         int r = (pixelHigher.getRed() + pixelLower.getRed()) / 2;
         int g = (pixelHigher.getGreen() + pixelLower.getGreen()) / 2;
