@@ -34,9 +34,9 @@ public class LineAverage implements Deinterlacer {
                                       null);
 
         for (int lineIndex = 1; lineIndex < field.getHeight() - 1; lineIndex += 2) {
-            BufferedImage evenLineHigher = field.getSubimage(0, lineIndex - 1, field.getWidth(), 1);
-            BufferedImage evenLineLower = field.getSubimage(0, lineIndex + 1, field.getWidth(), 1);
-            returnValueGraphics.drawImage(getAverageLine(evenLineHigher, evenLineLower),
+            BufferedImage oddLineHigher = field.getSubimage(0, lineIndex - 1, field.getWidth(), 1);
+            BufferedImage oddLineLower = field.getSubimage(0, lineIndex + 1, field.getWidth(), 1);
+            returnValueGraphics.drawImage(getAverageLine(oddLineHigher, oddLineLower),
                                           0,
                                           lineIndex,
                                           null);
